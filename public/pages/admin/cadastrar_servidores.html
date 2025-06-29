@@ -1,0 +1,136 @@
+<div class="container-fluid">
+    <h4 class="mb-4">Cadastrar Servidores</h4>
+
+    <div class="row">
+        <div class="col-12">
+            <form id="formCadastroUsuario">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome Completo</label>
+                    <input type="text" class="form-control" id="nome" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="identificador" class="form-label">SIAPE</label>
+                    <input type="text" class="form-control" id="identificador" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="tipo" class="form-label">Tipo de servidor</label>
+                    <select class="form-select" id="tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="DOCENTE">DOCENTE</option>
+                        <option value="ADMIN">ADMINISTRADOR</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Cadastrar Servidor</button>
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#modalCadastroLote">
+                        Cadastro em Lote
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h5>Servidores Cadastrados</h5>
+
+    <div class="mb-3 mt-3">
+        <label for="buscaUsuarios" class="form-label visually-hidden">Buscar Servidores</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" id="buscaUsuarios"
+                placeholder="Digite nome, email, SIAPE ou tipo" />
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle" id="tabelaUsuarios">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>SIAPE</th>
+                    <th>Tipo</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas geradas via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MODAL: Editar Usuário -->
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" id="formEditarUsuario">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Servidor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId" />
+
+                    <div class="mb-3">
+                        <label for="editNome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="editNome" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="editEmail" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editTipo" class="form-label">Tipo</label>
+                        <select class="form-select" id="editTipo" required>
+                            <option value="DOCENTE">DOCENTE</option>
+                            <option value="ADMIN">ADMINISTRADOR</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Cadastro em Lote -->
+    <div class="modal fade" id="modalCadastroLote" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" id="formLote">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastro em Lote (CSV)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Envie um arquivo <strong>.csv</strong> com os seguintes campos:</p>
+                    <ul>
+                        <li><code>nome</code></li>
+                        <li><code>email</code></li>
+                        <li><code>tipo</code> (DOCENTE ou ADMIN)</li>
+                        <li><code>siape</code></li>
+                    </ul>
+                    <div class="mb-3">
+                        <label for="arquivoCSV" class="form-label">Selecionar arquivo CSV</label>
+                        <input type="file" class="form-control" id="arquivoCSV" accept=".csv" required />
+                    </div>
+                    <p id="resultadoCSV" class="text-info fw-bold mt-3"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Importar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

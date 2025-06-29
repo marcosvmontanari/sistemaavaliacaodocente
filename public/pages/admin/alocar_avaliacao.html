@@ -1,0 +1,82 @@
+<h2 class="mb-4">Alocar Avaliação para Turmas</h2>
+
+<form id="formAlocar">
+    <div class="mb-3">
+        <label for="avaliacao" class="form-label">Selecione a Avaliação:</label>
+        <select id="avaliacao" class="form-select" required></select>
+    </div>
+
+    <div class="mb-3">
+        <label for="turmas" class="form-label">Informe as Turmas (separadas por vírgula):</label>
+        <input type="text" id="turmas" class="form-control" required placeholder="Ex: 1A, 2B, 3C" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Alocar</button>
+    <p id="msg" class="mt-3 fw-bold"></p>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const select = document.getElementById("avaliacao");
+        const msg = document.getElementById("msg");
+
+        try {
+            const res = await fetch("/admin/listar-avaliacoes");
+            const avaliacoes = await res.json();
+
+            if (avaliacoes.length === 0) {
+                select.innerHTML = '<option value="">Nenhuma avaliação disponível</option>';
+                return;
+            }
+
+            avaliacoes.forEach(av => {
+                const opt = document.createElement("option");
+                opt.value = av.id;
+                opt.textContent = av.titulo;
+                select.appendChild(opt);
+            });
+
+        } catch (erro) {
+            msg.textContent = "Erro ao carregar avaliações.";
+            msg.style.color = "red";
+        }
+
+        document.getElementById("formAlocar").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const avaliacao_id = select.value;
+            const turmas = document.getElementById("turmas").value
+                .split(',')
+                .map(t => t.trim())
+                .filter(t => t !== "");
+
+            if (turmas.length === 0) {
+                msg.textContent = "Informe ao menos uma turma.";
+                msg.style.color = "red";
+                return;
+            }
+
+            try {
+                const res = await fetch("/admin/alocar-avaliacao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ avaliacao_id, turmas })
+                });
+
+                const dados = await res.json();
+                if (res.ok) {
+                    msg.textContent = "Avaliação alocada com sucesso!";
+                    msg.style.color = "green";
+                    document.getElementById("formAlocar").reset();
+                } else {
+                    msg.textContent = dados.erro || "Erro ao alocar.";
+                    msg.style.color = "red";
+                }
+
+            } catch (erro) {
+                msg.textContent = "Erro de conexão com o servidor.";
+                msg.style.color = "red";
+            }
+        });
+    });
+</script>

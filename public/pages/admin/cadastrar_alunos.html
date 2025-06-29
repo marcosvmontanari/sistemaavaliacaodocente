@@ -1,0 +1,165 @@
+<div class="container-fluid">
+    <h4 class="mb-4">Cadastrar Alunos</h4>
+
+    <div class="row">
+        <div class="col-12">
+            <form id="formCadastroAluno">
+                <div class="mb-3">
+                    <label for="nomeAluno" class="form-label">Nome Completo</label>
+                    <input type="text" class="form-control" id="nomeAluno" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="emailAluno" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="emailAluno" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">Matrícula</label>
+                    <input type="number" class="form-control" id="matricula" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="curso" class="form-label">Curso</label>
+                    <select class="form-select" id="curso" required>
+                        <option value="">Selecione um curso</option>
+                        <optgroup label="Cursos Técnicos Integrados ao Ensino Médio">
+                            <option>Técnico em Administração</option>
+                            <option>Técnico em Agropecuária</option>
+                            <option>Técnico em Agropecuária em Regime de Alternância</option>
+                            <option>Técnico em Informática</option>
+                            <option>Técnico em Zootecnia</option>
+                        </optgroup>
+                        <optgroup label="Curso Técnico Subsequente">
+                            <option>Técnico em Enfermagem</option>
+                        </optgroup>
+                        <optgroup label="Cursos Superiores">
+                            <option>Engenharia Agronômica</option>
+                            <option>Tecnólogo em Análise e Desenvolvimento de Sistemas</option>
+                            <option>Tecnólogo em Processos Gerenciais</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="turma" class="form-label">Turma</label>
+                    <input type="text" class="form-control" id="turma" required />
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Cadastrar Aluno</button>
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#modalCadastroLoteAlunos">
+                        Cadastro em Lote
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h5>Alunos Cadastrados</h5>
+
+    <div class="mb-3 mt-3">
+        <label for="buscaAlunos" class="form-label visually-hidden">Buscar Alunos</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" id="buscaAlunos"
+                placeholder="Digite nome, e-mail, matrícula, curso ou turma" />
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle" id="tabelaAlunos">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Matrícula</th>
+                    <th>Curso</th>
+                    <th>Turma</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dados preenchidos dinamicamente -->
+            </tbody>
+        </table>
+        </div>
+</div>
+
+<!-- MODAL: Cadastro em Lote -->
+<div class="modal fade" id="modalCadastroLoteAlunos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="formLoteAlunos">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastro em Lote (CSV)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Envie um arquivo <strong>.csv</strong> com os seguintes campos:</p>
+                <ul>
+                    <li><code>nome</code></li>
+                    <li><code>email</code></li>
+                    <li><code>tipo</code> (sempre ALUNO)</li>
+                    <li><code>matricula</code></li>
+                    <li><code>curso</code></li>
+                    <li><code>turma</code></li>
+                </ul>
+                <div class="mb-3">
+                    <label for="arquivoCSVAlunos" class="form-label">Selecionar arquivo CSV</label>
+                    <input type="file" class="form-control" id="arquivoCSVAlunos" accept=".csv" required />
+                </div>
+                <p id="resultadoCSVAlunos" class="text-info fw-bold mt-3"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Importar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Editar Aluno -->
+<div class="modal fade" id="modalEditarAluno" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="formEditarAluno">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Aluno</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <!-- ID oculto -->
+                <input type="hidden" id="editIdAluno" />
+
+                <div class="mb-3">
+                    <label for="editNomeAluno" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="editNomeAluno" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="editEmailAluno" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="editEmailAluno" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="editMatriculaAluno" class="form-label">Matrícula</label>
+                    <input type="text" class="form-control" id="editMatriculaAluno" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label for="editCursoAluno" class="form-label">Curso</label>
+                    <input type="text" class="form-control" id="editCursoAluno" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="editTurmaAluno" class="form-label">Turma</label>
+                    <input type="text" class="form-control" id="editTurmaAluno" required />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>

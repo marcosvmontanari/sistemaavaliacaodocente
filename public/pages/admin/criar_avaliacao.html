@@ -1,0 +1,132 @@
+<h2 class="mb-4">Criar Avaliação</h2>
+
+<form id="formAvaliacao">
+    <div class="mb-3">
+        <label for="titulo" class="form-label">Título da Avaliação:</label>
+        <input type="text" id="titulo" class="form-control" required />
+    </div>
+
+    <div id="listaQuestoes"></div>
+
+    <button type="button" id="btnAdicionarQuestao" class="btn btn-outline-primary mb-3">
+        <i class="bi bi-plus-circle"></i> Adicionar Questão
+    </button>
+    <br />
+    <button type="submit" class="btn btn-success">Salvar Avaliação</button>
+    <p id="msg" class="mt-3 fw-bold"></p>
+</form>
+
+<script>
+    let contadorQuestoes = 0;
+
+    document.getElementById("btnAdicionarQuestao").addEventListener("click", () => {
+        contadorQuestoes++;
+
+        const div = document.createElement("div");
+        div.classList.add("border", "p-3", "mb-3", "rounded", "bg-light");
+        div.innerHTML = `
+      <h5>Questão ${contadorQuestoes}</h5>
+      <div class="mb-3">
+        <label class="form-label">Texto da Pergunta:</label>
+        <input type="text" name="texto" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Tipo de Resposta:</label>
+        <select name="tipo" class="form-select tipo-questao" required>
+          <option value="MULTIPLA_ESCOLHA">Múltipla Escolha</option>
+          <option value="CAIXAS_SELECAO">Caixas de Seleção</option>
+          <option value="ESCALA">Escala (1-5)</option>
+          <option value="TEXTO_CURTO">Texto Curto</option>
+          <option value="PARAGRAFO">Parágrafo</option>
+        </select>
+      </div>
+
+      <div class="opcoes"></div>
+    `;
+
+        document.getElementById("listaQuestoes").appendChild(div);
+
+        const tipoSelect = div.querySelector(".tipo-questao");
+        const opcoesDiv = div.querySelector(".opcoes");
+
+        tipoSelect.addEventListener("change", () => {
+            const tipo = tipoSelect.value;
+            opcoesDiv.innerHTML = "";
+
+            if (tipo === "MULTIPLA_ESCOLHA" || tipo === "CAIXAS_SELECAO") {
+                const btnAddOpcao = document.createElement("button");
+                btnAddOpcao.type = "button";
+                btnAddOpcao.className = "btn btn-sm btn-secondary mb-2";
+                btnAddOpcao.textContent = "+ Adicionar Opção";
+
+                const ul = document.createElement("ul");
+                ul.className = "list-unstyled";
+
+                btnAddOpcao.addEventListener("click", () => {
+                    const li = document.createElement("li");
+                    li.className = "mb-2 d-flex align-items-center gap-2";
+                    li.innerHTML = `
+            <input type="text" name="opcao" class="form-control" placeholder="Opção de resposta" required />
+            <button type="button" class="btn btn-danger btn-sm removerOpcao"><i class="bi bi-trash"></i></button>
+          `;
+                    ul.appendChild(li);
+
+                    li.querySelector(".removerOpcao").addEventListener("click", () => ul.removeChild(li));
+                });
+
+                opcoesDiv.appendChild(btnAddOpcao);
+                opcoesDiv.appendChild(ul);
+            }
+        });
+    });
+
+    document.getElementById("formAvaliacao").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const titulo = document.getElementById("titulo").value;
+        const questoes = [];
+
+        document.querySelectorAll(".border").forEach(div => {
+            const texto = div.querySelector('input[name="texto"]').value;
+            const tipo = div.querySelector('select[name="tipo"]').value;
+            const opcoes = [];
+
+            div.querySelectorAll('input[name="opcao"]').forEach(input => {
+                if (input.value.trim() !== "") {
+                    opcoes.push(input.value.trim());
+                }
+            });
+
+            questoes.push({ texto, tipo, opcoes });
+        });
+
+        const payload = { titulo, questoes };
+
+        try {
+            const resposta = await fetch("/admin/criar-avaliacao", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            const dados = await resposta.json();
+            const msg = document.getElementById("msg");
+
+            if (resposta.ok) {
+                msg.textContent = "Avaliação criada com sucesso!";
+                msg.style.color = "green";
+                document.getElementById("formAvaliacao").reset();
+                document.getElementById("listaQuestoes").innerHTML = "";
+                contadorQuestoes = 0;
+            } else {
+                msg.textContent = dados.erro || "Erro ao salvar avaliação.";
+                msg.style.color = "red";
+            }
+
+        } catch (erro) {
+            document.getElementById("msg").textContent = "Erro de conexão com o servidor.";
+            document.getElementById("msg").style.color = "red";
+        }
+    });
+</script>

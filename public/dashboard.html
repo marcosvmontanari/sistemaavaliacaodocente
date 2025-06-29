@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sistema de Avaliação Docente</title>
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+
+        .sidebar {
+            background-color: #00a859;
+            height: 100vh;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 250px;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar .nav-link {
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .topbar {
+            background-color: #00a859;
+            height: 60px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            z-index: 1000;
+        }
+
+        .topbar .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .topbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-sair {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-sair:hover {
+            background-color: #b02a37;
+            color: white;
+        }
+
+        main {
+            margin-left: 250px;
+            padding-top: 80px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPO -->
+    <div class="topbar">
+        <span class="logo">Sistema de Avaliação Docente</span>
+        <div class="user-info">
+            <span id="saudacao">Bem-vindo</span>
+            <button id="btnSair" class="btn btn-sair btn-sm">Sair</button>
+        </div>
+    </div>
+
+    <!-- MENU LATERAL -->
+    <nav class="sidebar">
+        <ul class="nav flex-column" id="menu">
+            <li class="nav-item admin">
+                <a class="nav-link" href="#" data-pagina="pages/admin/cadastrar_servidores.html">
+                    <i class="bi text-warning"></i>📋 Gerenciar Servidores
+                </a>
+            </li>
+            <li class="nav-item admin">
+                <a class="nav-link" href="#" data-pagina="pages/admin/cadastrar_alunos.html">
+                    <i class="bi text-success"></i>👥 Gerenciar Alunos
+                </a>
+            </li>
+            <li class="nav-item admin">
+                <a class="nav-link" href="#" data-pagina="pages/admin/criar_avaliacao.html">
+                    <i class="bi text-info"></i>📝 Criar Avaliação
+                </a>
+            </li>
+            <li class="nav-item admin">
+                <a class="nav-link" href="#" data-pagina="pages/admin/alocar_avaliacao.html">
+                    <i class="bi text-danger"></i>📤 Alocar Avaliação
+                </a>
+            </li>
+            <li class="nav-item docente">
+                <a class="nav-link" href="#" data-pagina="pages/docente/ver_resultados.html">
+                    <i class="bi text-success"></i>📊 Ver Resultados
+                </a>
+            </li>
+            <li class="nav-item aluno">
+                <a class="nav-link" href="#" data-pagina="pages/aluno/responder_avaliacao.html">
+                    <i class="bi text-primary"></i>✏️ Responder Avaliação
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main id="conteudoDinamico">
+        <div class="alert alert-info">
+            Selecione uma opção no menu para começar.
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS Dinâmico -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+            if (!usuario) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Saudação
+            document.getElementById("saudacao").textContent = `Bem-vindo, ${usuario.nome}`;
+
+            // Exibe apenas os itens do tipo correspondente
+            document.querySelectorAll("#menu .nav-item").forEach(item => item.style.display = "none");
+            document.querySelectorAll(`#menu .nav-item.${usuario.tipo.toLowerCase()}`).forEach(item => {
+                item.style.display = "block";
+            });
+
+            // Navegação dinâmica
+            document.querySelectorAll("a[data-pagina]").forEach(link => {
+                link.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const pagina = link.getAttribute("data-pagina");
+                    const conteudo = document.getElementById("conteudoDinamico");
+
+                    try {
+                        const res = await fetch(pagina);
+                        const html = await res.text();
+                        conteudo.innerHTML = html;
+
+                        const nomePagina = pagina.split("/").pop();
+                        const caminhoJS = "js/" + nomePagina.replace(".html", ".js");
+
+                        // Remove scripts anteriores (por segurança)
+                        document.querySelectorAll("script[data-dinamico]").forEach(s => s.remove());
+
+                        const script = document.createElement("script");
+                        script.src = "/" + caminhoJS + "?v=" + Date.now();  // força recarregamento
+                        script.type = "text/javascript";
+                        script.defer = true;
+                        script.setAttribute("data-dinamico", "true");
+
+                        script.onload = () => {
+                            // Após carregamento, chama a função se existir
+                            if (typeof iniciarCadastroUsuarios === "function") {
+                                iniciarCadastroUsuarios();
+                            }
+                            if (typeof iniciarCadastroAlunos === "function") {
+                                iniciarCadastroAlunos();
+                            }
+                        };
+
+                        document.body.appendChild(script);
+                    } catch (err) {
+                        console.error("Erro ao carregar página:", err);
+                        conteudo.innerHTML = "<p class='text-danger'>Erro ao carregar a página.</p>";
+                    }
+                });
+            });
+
+            document.getElementById("btnSair").addEventListener("click", () => {
+                sessionStorage.clear();
+                window.location.href = "login.html";
+            });
+        });
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+</html>
