@@ -208,6 +208,33 @@
     </script>
     
 
+    <!-- MODAL: Troca de Senha no Primeiro Acesso -->
+    <div class="modal fade" id="modalTrocarSenha" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <form class="modal-content" id="formTrocarSenha">
+                <div class="modal-header">
+                    <h5 class="modal-title">Trocar Senha</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Você deve criar uma nova senha antes de continuar.</p>
+                    <div class="mb-3">
+                        <label for="novaSenha" class="form-label">Nova Senha</label>
+                        <input type="password" class="form-control" id="novaSenha" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmarSenha" class="form-label">Confirmar Nova Senha</label>
+                        <input type="password" class="form-control" id="confirmarSenha" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Salvar Nova Senha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  
+
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

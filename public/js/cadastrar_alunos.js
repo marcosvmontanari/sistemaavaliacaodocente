@@ -13,7 +13,6 @@ aguardarFormularioAluno();
 
 function iniciarCadastroAlunos() {
     const form = document.getElementById("formCadastroAluno");
-
     if (form.dataset.listenerAttached === "true") return;
     form.dataset.listenerAttached = "true";
 
@@ -36,11 +35,7 @@ function iniciarCadastroAlunos() {
             alunos = lista.filter(u => u.tipo === "ALUNO");
             renderizarTabela(alunos);
         } catch {
-            Swal.fire({
-                icon: 'error',
-                title: 'Erro',
-                text: 'Erro ao carregar alunos.'
-            });
+            Swal.fire({ icon: 'error', title: 'Erro', text: 'Erro ao carregar alunos.' });
         }
     }
 
@@ -197,11 +192,11 @@ function iniciarCadastroAlunos() {
         }
 
         if (acao === "editar") {
-            document.getElementById("editId").value = aluno.id;
+            document.getElementById("editIdAluno").value = aluno.id;
             document.getElementById("editNomeAluno").value = aluno.nome;
             document.getElementById("editEmailAluno").value = aluno.email;
-            document.getElementById("editCurso").value = aluno.curso || "";
-            document.getElementById("editTurma").value = aluno.turma || "";
+            document.getElementById("editCursoAluno").value = aluno.curso;
+            document.getElementById("editTurmaAluno").value = aluno.turma;
             modalEditar.show();
         }
     });
@@ -209,11 +204,11 @@ function iniciarCadastroAlunos() {
     formEditar?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const id = document.getElementById("editId").value;
+        const id = document.getElementById("editIdAluno").value;
         const nome = document.getElementById("editNomeAluno").value.trim();
         const email = document.getElementById("editEmailAluno").value.trim().toLowerCase();
-        const curso = document.getElementById("editCurso").value.trim();
-        const turma = document.getElementById("editTurma").value.trim();
+        const curso = document.getElementById("editCursoAluno").value.trim();
+        const turma = document.getElementById("editTurmaAluno").value.trim();
 
         const dados = { nome, email, curso, turma, tipo: "ALUNO" };
 

@@ -68,14 +68,32 @@ exports.cadastrar = async (req, res) => {
 // Editar dados do usuário
 exports.editar = (req, res) => {
     const id = req.params.id;
-    const { nome, email, tipo } = req.body;
+    const { nome, email, tipo, curso, turma } = req.body;
 
-    const sql = "UPDATE usuarios SET nome = ?, email = ?, tipo = ? WHERE id = ?";
-    db.query(sql, [nome, email.trim().toLowerCase(), tipo, id], (erro, resultado) => {
+    // Atualiza todos os campos possíveis (curso/turma só para ALUNO)
+    const sql = `
+        UPDATE usuarios 
+        SET nome = ?, email = ?, tipo = ?, 
+            curso = CASE WHEN ? = 'ALUNO' THEN ? ELSE curso END,
+            turma = CASE WHEN ? = 'ALUNO' THEN ? ELSE turma END
+        WHERE id = ?
+    `;
+
+    const valores = [
+        nome,
+        email.trim().toLowerCase(),
+        tipo,
+        tipo, curso,
+        tipo, turma,
+        id
+    ];
+
+    db.query(sql, valores, (erro, resultado) => {
         if (erro) return res.status(500).json({ erro: "Erro ao editar usuário" });
         res.json({ mensagem: "Usuário atualizado com sucesso" });
     });
 };
+
 
 // Excluir usuário
 exports.excluir = (req, res) => {

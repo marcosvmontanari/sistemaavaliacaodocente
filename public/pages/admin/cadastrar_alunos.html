@@ -86,7 +86,7 @@
                 <!-- Dados preenchidos dinamicamente -->
             </tbody>
         </table>
-        </div>
+    </div>
 </div>
 
 <!-- MODAL: Cadastro em Lote -->
@@ -129,7 +129,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <!-- ID oculto -->
                 <input type="hidden" id="editIdAluno" />
 
                 <div class="mb-3">
@@ -143,13 +142,25 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="editMatriculaAluno" class="form-label">Matrícula</label>
-                    <input type="text" class="form-control" id="editMatriculaAluno" readonly />
-                </div>
-
-                <div class="mb-3">
                     <label for="editCursoAluno" class="form-label">Curso</label>
-                    <input type="text" class="form-control" id="editCursoAluno" required />
+                    <select class="form-select" id="editCursoAluno" required>
+                        <option value="">Selecione um curso</option>
+                        <optgroup label="Cursos Técnicos Integrados ao Ensino Médio">
+                            <option>Técnico em Administração</option>
+                            <option>Técnico em Agropecuária</option>
+                            <option>Técnico em Agropecuária em Regime de Alternância</option>
+                            <option>Técnico em Informática</option>
+                            <option>Técnico em Zootecnia</option>
+                        </optgroup>
+                        <optgroup label="Curso Técnico Subsequente">
+                            <option>Técnico em Enfermagem</option>
+                        </optgroup>
+                        <optgroup label="Cursos Superiores">
+                            <option>Engenharia Agronômica</option>
+                            <option>Tecnólogo em Análise e Desenvolvimento de Sistemas</option>
+                            <option>Tecnólogo em Processos Gerenciais</option>
+                        </optgroup>
+                    </select>
                 </div>
 
                 <div class="mb-3">
